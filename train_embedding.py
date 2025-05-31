@@ -15,14 +15,14 @@ from miscellaneous import data, augmenter
 from embedder import moco_v2
 
 # --- Configuration ---
-device = torch.device("mps")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Device used: {device}.")
 
 img_size = 256
 
 # Training parameters
-num_epochs = 50
-batch_size = 16
+num_epochs = 200
+batch_size = 32
 learning_rate = 1e-4
 weights_folder = "model_weights/"
 os.makedirs(weights_folder, exist_ok=True)
