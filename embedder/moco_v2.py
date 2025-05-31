@@ -84,7 +84,7 @@ def get_encoder(
     embedding_dim,
     device,
 ):
-    model = models.resnet50(pretrained=False)
+    model = models.resnet50(weights=None)
     model.conv1 = nn.Conv2d(
         in_channels, 64, kernel_size=7, stride=2, padding=3, bias=False
     )

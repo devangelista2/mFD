@@ -94,38 +94,4 @@ for epoch in range(num_epochs):
     if (epoch + 1) % 5 == 0:
         torch.save(moco.state_dict(), os.path.join(weights_folder, "mocov2.pth"))
         print(f"Checkpoint saved at epoch {epoch+1}.")
-
-# t-SNE visualization of embeddings
-# Prepare a simple loader without dual crops
-test_data = data.MayoDataset(
-    data_path=os.path.join("..", "data", "Mayo", "test"),
-    transforms=augmenter.SimpleTransform(img_size),
-)
-test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
-
-# Compute evaluation
-moco.eval()
-features, test_labels = [], []
-with torch.no_grad():
-    for imgs, labs in test_loader:
-        # Send to device
-        imgs = imgs.to(device)
-
-        # Compute features via MoCo v2z
-        feat = moco.encoder_q(imgs)
-        feat = nn.functional.normalize(feat, dim=1)
-
-        # Save elements on the list
-        features.append(feat.cpu().numpy())
-        test_labels.extend(labs.numpy())
-features = np.vstack(features)
-
-# Run t-SNE
-tsne = TSNE(n_components=2, perplexity=30, n_iter=1000)
-feat_2d = tsne.fit_transform(features)
-
-plt.figure(figsize=(8, 8))
-sc = plt.scatter(feat_2d[:, 0], feat_2d[:, 1], c=test_labels, s=5, cmap="tab10")
-plt.legend(*sc.legend_elements(), title="Classes")
-plt.title("t-SNE of MoCo v2 Embeddings")
-plt.show()
+print(f"Training done.")
